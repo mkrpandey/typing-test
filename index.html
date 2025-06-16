@@ -2,147 +2,130 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>1-Minute Typing Test</title>
+  <title>Typing Speed Test</title>
   <style>
     body {
       font-family: 'Segoe UI', sans-serif;
-      background-color: #f9f9f9;
+      background: #f4f6f8;
       color: #333;
-      padding: 40px;
-      line-height: 1.6;
+      padding: 30px;
+      text-align: center;
     }
-    h2 { color: #2c3e50; }
-    #test-container {
-      max-width: 800px;
+    .container {
+      max-width: 700px;
       margin: auto;
       background: #fff;
       padding: 30px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
     }
-    #timer {
-      font-size: 20px;
-      color: #e74c3c;
-      font-weight: bold;
-    }
-    #paragraph {
+    #quote {
+      font-size: 18px;
+      line-height: 1.6;
       margin-bottom: 20px;
-      padding: 15px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      background: #f0f0f0;
+      color: #2c3e50;
     }
-    #inputArea {
+    textarea {
       width: 100%;
-      height: 120px;
+      height: 100px;
       font-size: 16px;
       padding: 10px;
+      border: 2px solid #3498db;
       border-radius: 8px;
-      border: 1px solid #aaa;
+      margin-bottom: 20px;
+      resize: none;
     }
-    #results {
-      margin-top: 20px;
-      padding: 15px;
-      background: #ecf9ec;
-      border-left: 5px solid #2ecc71;
-      display: none;
-    }
-    #submitBtn {
-      margin-top: 15px;
-      padding: 10px 20px;
+    button {
       background: #3498db;
       color: white;
       border: none;
-      border-radius: 6px;
-      cursor: pointer;
+      padding: 10px 20px;
       font-size: 16px;
+      border-radius: 8px;
+      cursor: pointer;
     }
-    #submitBtn:hover {
+    button:hover {
       background: #2980b9;
+    }
+    .results {
+      margin-top: 20px;
+      text-align: left;
+    }
+    .results p {
+      margin: 5px 0;
+    }
+    .highlight-wrong {
+      background-color: #f8d7da;
     }
   </style>
 </head>
 <body>
-  <div id="test-container">
-    <h2>🧠 1-Minute Typing Speed Test</h2>
-    <p><strong>Time Left: <span id="timer">60</span> seconds</strong></p>
-    <div id="paragraph">
-      The quick brown fox jumps over the lazy dog. Typing is a great way to improve your speed and accuracy. 
-      Practice every day and you will see amazing results. Stay focused and keep your hands on the home row.
-    </div>
-    <textarea id="inputArea" placeholder="Start typing here..." disabled></textarea>
-    <button id="submitBtn" onclick="submitTest()">Submit</button>
-    <div id="results"></div>
+  <div class="container">
+    <h2>⏱ 1-Minute Typing Speed Test</h2>
+    <p id="quote">
+      Practice makes a man perfect. Keep learning, keep growing.  
+      Typing fast and accurately improves your productivity.  
+      Stay focused and challenge yourself every day.  
+      Great things never come from comfort zones.
+    </p>
+    
+    <textarea id="input" placeholder="Start typing here..."></textarea><br>
+    <button onclick="startTest()">Start Test</button>
+
+    <div class="results" id="results"></div>
   </div>
 
   <script>
-    const paragraph = document.getElementById('paragraph').innerText;
-    const inputArea = document.getElementById('inputArea');
-    const timerDisplay = document.getElementById('timer');
-    const resultsDiv = document.getElementById('results');
-    const submitBtn = document.getElementById('submitBtn');
+    let startTime, endTime, timer;
+    const originalText = document.getElementById('quote').innerText;
+    const inputBox = document.getElementById('input');
+    const results = document.getElementById('results');
+    let timeLimit = 60; // seconds
 
-    let timeLeft = 60;
-    let timer;
-    let started = false;
+    function startTest() {
+      inputBox.value = '';
+      inputBox.focus();
+      inputBox.disabled = false;
+      results.innerHTML = '';
+      startTime = new Date();
+      inputBox.removeAttribute('readonly');
 
-    inputArea.addEventListener('focus', () => {
-      if (!started) {
-        started = true;
-        inputArea.disabled = false;
-        startTimer();
-      }
-    });
-
-    function startTimer() {
-      timer = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = timeLeft;
-        if (timeLeft === 0) {
-          clearInterval(timer);
-          inputArea.disabled = true;
-          submitTest();
-        }
-      }, 1000);
+      timer = setTimeout(() => {
+        inputBox.setAttribute('readonly', true);
+        endTest();
+      }, timeLimit * 1000);
     }
 
-    function submitTest() {
-      clearInterval(timer);
-      inputArea.disabled = true;
-      submitBtn.disabled = true;
+    function endTest() {
+      endTime = new Date();
+      const typedText = inputBox.value.trim();
+      const totalTime = ((endTime - startTime) / 1000).toFixed(2);
+      const wordsTyped = typedText.split(/\s+/).length;
+      const charsTyped = typedText.length;
+      const wpm = Math.round((wordsTyped / totalTime) * 60);
 
-      const typed = inputArea.value.trim();
-      const typedWords = typed.split(/\s+/);
-      const totalTyped = typedWords.length;
-
-      const originalWords = paragraph.trim().split(/\s+/);
       let correct = 0;
-      for (let i = 0; i < Math.min(originalWords.length, typedWords.length); i++) {
-        if (typedWords[i] === originalWords[i]) correct++;
+      const originalWords = originalText.trim().split(/\s+/);
+      const typedWords = typedText.trim().split(/\s+/);
+
+      for (let i = 0; i < typedWords.length; i++) {
+        if (typedWords[i] === originalWords[i]) {
+          correct++;
+        }
       }
 
       const accuracy = ((correct / originalWords.length) * 100).toFixed(2);
-      const wpm = Math.round((totalTyped / (60 - timeLeft)) * 60);
-      const timeUsed = 60 - timeLeft;
+      const mistakes = typedWords.length - correct;
 
-      resultsDiv.style.display = "block";
-      resultsDiv.innerHTML = `
-        <h3>📊 Your Typing Test Result:</h3>
-        <p><strong>Time Used:</strong> ${timeUsed} sec</p>
-        <p><strong>Words Typed:</strong> ${totalTyped}</p>
-        <p><strong>Correct Words:</strong> ${correct}</p>
+      results.innerHTML = `
+        <h3>📊 Your Results</h3>
+        <p><strong>Time Taken:</strong> ${totalTime} seconds</p>
+        <p><strong>Words Per Minute (WPM):</strong> ${wpm}</p>
+        <p><strong>Characters Typed:</strong> ${charsTyped}</p>
         <p><strong>Accuracy:</strong> ${accuracy}%</p>
-        <p><strong>WPM (Words Per Minute):</strong> ${wpm}</p>
+        <p><strong>Mistakes:</strong> ${mistakes}</p>
       `;
     }
-
-    // Enable textarea after page loads (so user can't start before reading)
-    window.onload = () => {
-      setTimeout(() => {
-        inputArea.disabled = false;
-        inputArea.focus();
-      }, 1000);
-    };
   </script>
 </body>
 </html>
