@@ -1,58 +1,148 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Typing Test</title>
+  <meta charset="UTF-8">
+  <title>1-Minute Typing Test</title>
   <style>
-    body { font-family: Arial; padding: 20px; }
-    #text { border: 1px solid #ccc; padding: 10px; }
-    #input { width: 100%; height: 80px; font-size: 16px; }
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f9f9f9;
+      color: #333;
+      padding: 40px;
+      line-height: 1.6;
+    }
+    h2 { color: #2c3e50; }
+    #test-container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    #timer {
+      font-size: 20px;
+      color: #e74c3c;
+      font-weight: bold;
+    }
+    #paragraph {
+      margin-bottom: 20px;
+      padding: 15px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #f0f0f0;
+    }
+    #inputArea {
+      width: 100%;
+      height: 120px;
+      font-size: 16px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #aaa;
+    }
+    #results {
+      margin-top: 20px;
+      padding: 15px;
+      background: #ecf9ec;
+      border-left: 5px solid #2ecc71;
+      display: none;
+    }
+    #submitBtn {
+      margin-top: 15px;
+      padding: 10px 20px;
+      background: #3498db;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+    #submitBtn:hover {
+      background: #2980b9;
+    }
   </style>
 </head>
 <body>
-  <h2>Typing Speed Test</h2>
-  <p id="text">The quick brown fox jumps over the lazy dog.</p>
-  <textarea id="input" placeholder="Start typing here..."></textarea>
-  <br><br>
-  <input type="text" id="name" placeholder="Your Name" />
-  <input type="email" id="email" placeholder="Your Email" />
-  <button onclick="submitResult()">Submit</button>
+  <div id="test-container">
+    <h2>🧠 1-Minute Typing Speed Test</h2>
+    <p><strong>Time Left: <span id="timer">60</span> seconds</strong></p>
+    <div id="paragraph">
+      The quick brown fox jumps over the lazy dog. Typing is a great way to improve your speed and accuracy. 
+      Practice every day and you will see amazing results. Stay focused and keep your hands on the home row.
+    </div>
+    <textarea id="inputArea" placeholder="Start typing here..." disabled></textarea>
+    <button id="submitBtn" onclick="submitTest()">Submit</button>
+    <div id="results"></div>
+  </div>
 
   <script>
-    let startTime, endTime;
-    const target = document.getElementById('text').innerText;
-    const inputBox = document.getElementById('input');
+    const paragraph = document.getElementById('paragraph').innerText;
+    const inputArea = document.getElementById('inputArea');
+    const timerDisplay = document.getElementById('timer');
+    const resultsDiv = document.getElementById('results');
+    const submitBtn = document.getElementById('submitBtn');
 
-    inputBox.addEventListener('focus', () => {
-      if (!startTime) startTime = new Date();
+    let timeLeft = 60;
+    let timer;
+    let started = false;
+
+    inputArea.addEventListener('focus', () => {
+      if (!started) {
+        started = true;
+        inputArea.disabled = false;
+        startTimer();
+      }
     });
 
-    function submitResult() {
-      endTime = new Date();
-      const typed = inputBox.value;
-      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
-      const words = typed.trim().split(/\s+/).length;
-      const wpm = ((words / timeTaken) * 60).toFixed(2);
-      const accuracy = (compareText(typed, target) * 100).toFixed(2);
-
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
-
-      fetch("YOUR_WEB_APP_URL", {
-        method: "POST",
-        body: JSON.stringify({ name, email, wpm, accuracy, time: timeTaken }),
-        headers: { "Content-Type": "application/json" }
-      }).then(() => alert("Submitted successfully!"));
+    function startTimer() {
+      timer = setInterval(() => {
+        timeLeft--;
+        timerDisplay.textContent = timeLeft;
+        if (timeLeft === 0) {
+          clearInterval(timer);
+          inputArea.disabled = true;
+          submitTest();
+        }
+      }, 1000);
     }
 
-    function compareText(input, ref) {
+    function submitTest() {
+      clearInterval(timer);
+      inputArea.disabled = true;
+      submitBtn.disabled = true;
+
+      const typed = inputArea.value.trim();
+      const typedWords = typed.split(/\s+/);
+      const totalTyped = typedWords.length;
+
+      const originalWords = paragraph.trim().split(/\s+/);
       let correct = 0;
-      const inputWords = input.trim().split(/\s+/);
-      const refWords = ref.trim().split(/\s+/);
-      for (let i = 0; i < refWords.length; i++) {
-        if (inputWords[i] === refWords[i]) correct++;
+      for (let i = 0; i < Math.min(originalWords.length, typedWords.length); i++) {
+        if (typedWords[i] === originalWords[i]) correct++;
       }
-      return correct / refWords.length;
+
+      const accuracy = ((correct / originalWords.length) * 100).toFixed(2);
+      const wpm = Math.round((totalTyped / (60 - timeLeft)) * 60);
+      const timeUsed = 60 - timeLeft;
+
+      resultsDiv.style.display = "block";
+      resultsDiv.innerHTML = `
+        <h3>📊 Your Typing Test Result:</h3>
+        <p><strong>Time Used:</strong> ${timeUsed} sec</p>
+        <p><strong>Words Typed:</strong> ${totalTyped}</p>
+        <p><strong>Correct Words:</strong> ${correct}</p>
+        <p><strong>Accuracy:</strong> ${accuracy}%</p>
+        <p><strong>WPM (Words Per Minute):</strong> ${wpm}</p>
+      `;
     }
+
+    // Enable textarea after page loads (so user can't start before reading)
+    window.onload = () => {
+      setTimeout(() => {
+        inputArea.disabled = false;
+        inputArea.focus();
+      }, 1000);
+    };
   </script>
 </body>
 </html>
