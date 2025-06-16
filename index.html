@@ -5,184 +5,157 @@
   <title>Typing Speed Test</title>
   <style>
     body {
-      background: linear-gradient(to right, #74ebd5, #ACB6E5);
+      background: linear-gradient(135deg, #2980b9, #6dd5fa);
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
       padding: 0;
+      color: #fff;
       display: flex;
-      height: 100vh;
       justify-content: center;
       align-items: center;
+      min-height: 100vh;
     }
 
     .container {
-      background-color: white;
+      background: #2c3e50;
       padding: 30px;
       border-radius: 15px;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
       width: 90%;
-      max-width: 800px;
+      max-width: 700px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
       text-align: center;
       animation: fadeIn 1s ease-in-out;
     }
 
     @keyframes fadeIn {
-      from {opacity: 0; transform: translateY(20px);}
-      to {opacity: 1; transform: translateY(0);}
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
     }
 
     h2 {
-      color: #2c3e50;
       margin-bottom: 20px;
     }
 
     #quote {
+      background: #34495e;
+      padding: 20px;
+      border-radius: 10px;
       font-size: 18px;
       line-height: 1.6;
-      padding: 15px;
-      background-color: #f1f1f1;
-      border-left: 5px solid #3498db;
-      border-radius: 5px;
       margin-bottom: 20px;
-      transition: all 0.3s ease-in-out;
     }
 
     textarea {
       width: 100%;
-      height: 100px;
+      height: 120px;
+      padding: 10px;
       font-size: 16px;
-      padding: 12px;
       border-radius: 10px;
-      border: 2px solid #2980b9;
+      border: none;
       resize: none;
       outline: none;
-      transition: 0.3s;
-    }
-
-    textarea:disabled {
-      background-color: #eee;
-      cursor: not-allowed;
+      background: #ecf0f1;
+      color: #2c3e50;
     }
 
     button {
-      padding: 12px 24px;
-      background-color: #2980b9;
-      color: white;
+      background: #1abc9c;
       border: none;
-      border-radius: 10px;
+      padding: 12px 25px;
       font-size: 16px;
+      border-radius: 8px;
+      color: white;
+      margin-top: 15px;
       cursor: pointer;
-      margin-top: 20px;
-      transition: 0.3s;
+      transition: 0.3s ease;
     }
 
     button:hover {
-      background-color: #1c5980;
+      background: #16a085;
     }
 
     .results {
       margin-top: 25px;
       text-align: left;
-      background: #fdfdfd;
-      padding: 20px;
+      background: #34495e;
+      padding: 15px;
       border-radius: 10px;
-      border: 1px solid #ddd;
-      animation: fadeIn 1s ease-in-out;
     }
 
     .results p {
-      margin: 8px 0;
+      margin: 5px 0;
     }
-
-    .timer {
-      font-size: 18px;
-      font-weight: bold;
-      margin-bottom: 10px;
-      color: #c0392b;
-    }
-
   </style>
 </head>
 <body>
-
   <div class="container">
-    <h2>🔥 1-Minute Typing Speed Test</h2>
-    <div class="timer" id="timer">Time Left: 60s</div>
-
+    <h2>🔥 1-Minute Typing Test</h2>
     <p id="quote">
-      Success is not final. Failure is not fatal.  
-      It is the courage to continue that counts.  
-      Push yourself because no one else is going to do it for you.  
-      Stay humble, stay hungry.
+      The journey of a thousand miles begins with a single step.  
+      Success is not final, failure is not fatal.  
+      Practice makes a man perfect.  
+      Keep learning, keep growing every single day.
     </p>
 
-    <textarea id="input" placeholder="Click 'Start Test' to begin..." disabled></textarea><br>
-    <button onclick="startTest()">Start Test</button>
+    <textarea id="input" placeholder="Click Start to begin..." disabled></textarea><br>
+    <button onclick="startTest()" id="startBtn">Start Test</button>
 
-    <div class="results" id="results"></div>
+    <div class="results" id="results" style="display: none;"></div>
   </div>
 
   <script>
-    const quoteText = document.getElementById('quote').innerText.trim();
+    let startTime, endTime, timer;
+    const timeLimit = 60; // seconds
+    const quoteText = document.getElementById('quote').innerText;
     const inputBox = document.getElementById('input');
-    const results = document.getElementById('results');
-    const timerDisplay = document.getElementById('timer');
-
-    let timer;
-    let startTime;
-    const testDuration = 60; // 60 seconds
+    const resultsBox = document.getElementById('results');
+    const startBtn = document.getElementById('startBtn');
 
     function startTest() {
-      inputBox.value = '';
+      inputBox.value = "";
       inputBox.disabled = false;
       inputBox.focus();
-      results.innerHTML = '';
-      timerDisplay.textContent = `Time Left: ${testDuration}s`;
+      startTime = new Date();
+      startBtn.disabled = true;
+      resultsBox.style.display = 'none';
 
-      startTime = new Date().getTime();
-
-      let timeLeft = testDuration;
-      timer = setInterval(() => {
-        timeLeft--;
-        timerDisplay.textContent = `Time Left: ${timeLeft}s`;
-
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          finishTest();
-        }
-      }, 1000);
+      // auto-end after 60 seconds
+      timer = setTimeout(() => {
+        inputBox.disabled = true;
+        showResults();
+        startBtn.disabled = false;
+      }, timeLimit * 1000);
     }
 
-    function finishTest() {
-      inputBox.disabled = true;
-      const endTime = new Date().getTime();
-      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+    function showResults() {
+      endTime = new Date();
+      const totalTime = ((endTime - startTime) / 1000).toFixed(2);
       const typedText = inputBox.value.trim();
-
-      const totalWords = typedText.split(/\s+/).length;
-      const totalChars = typedText.length;
-      const wpm = Math.round((totalWords / timeTaken) * 60);
-
-      const originalWords = quoteText.split(/\s+/);
       const typedWords = typedText.split(/\s+/);
+      const originalWords = quoteText.trim().split(/\s+/);
 
-      let correctWords = 0;
+      let correct = 0;
       for (let i = 0; i < typedWords.length; i++) {
-        if (typedWords[i] === originalWords[i]) correctWords++;
+        if (typedWords[i] === originalWords[i]) {
+          correct++;
+        }
       }
 
-      const accuracy = ((correctWords / originalWords.length) * 100).toFixed(2);
-      const mistakes = typedWords.length - correctWords;
+      const wpm = Math.round((typedWords.length / totalTime) * 60);
+      const accuracy = ((correct / originalWords.length) * 100).toFixed(2);
+      const charsTyped = typedText.length;
+      const mistakes = typedWords.length - correct;
 
-      results.innerHTML = `
-        <h3>📊 Test Results</h3>
-        <p><strong>Time Taken:</strong> ${timeTaken} seconds</p>
-        <p><strong>Words Per Minute (WPM):</strong> ${wpm}</p>
-        <p><strong>Total Characters Typed:</strong> ${totalChars}</p>
-        <p><strong>Correct Words:</strong> ${correctWords} / ${originalWords.length}</p>
-        <p><strong>Mistakes:</strong> ${mistakes}</p>
-        <p><strong>Accuracy:</strong> ${accuracy}%</p>
+      resultsBox.innerHTML = `
+        <h3>📊 Your Result:</h3>
+        <p><strong>⏱ Time Taken:</strong> ${totalTime} seconds</p>
+        <p><strong>✍️ Words Typed:</strong> ${typedWords.length}</p>
+        <p><strong>📈 WPM:</strong> ${wpm}</p>
+        <p><strong>✅ Accuracy:</strong> ${accuracy}%</p>
+        <p><strong>❌ Mistakes:</strong> ${mistakes}</p>
+        <p><strong>🔤 Characters Typed:</strong> ${charsTyped}</p>
       `;
+      resultsBox.style.display = 'block';
     }
   </script>
 </body>
