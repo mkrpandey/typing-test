@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Typing Test</title>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    #text { border: 1px solid #ccc; padding: 10px; }
+    #input { width: 100%; height: 80px; font-size: 16px; }
+  </style>
+</head>
+<body>
+  <h2>Typing Speed Test</h2>
+  <p id="text">The quick brown fox jumps over the lazy dog.</p>
+  <textarea id="input" placeholder="Start typing here..."></textarea>
+  <br><br>
+  <input type="text" id="name" placeholder="Your Name" />
+  <input type="email" id="email" placeholder="Your Email" />
+  <button onclick="submitResult()">Submit</button>
+
+  <script>
+    let startTime, endTime;
+    const target = document.getElementById('text').innerText;
+    const inputBox = document.getElementById('input');
+
+    inputBox.addEventListener('focus', () => {
+      if (!startTime) startTime = new Date();
+    });
+
+    function submitResult() {
+      endTime = new Date();
+      const typed = inputBox.value;
+      const timeTaken = ((endTime - startTime) / 1000).toFixed(2);
+      const words = typed.trim().split(/\s+/).length;
+      const wpm = ((words / timeTaken) * 60).toFixed(2);
+      const accuracy = (compareText(typed, target) * 100).toFixed(2);
+
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+
+      fetch("YOUR_WEB_APP_URL", {
+        method: "POST",
+        body: JSON.stringify({ name, email, wpm, accuracy, time: timeTaken }),
+        headers: { "Content-Type": "application/json" }
+      }).then(() => alert("Submitted successfully!"));
+    }
+
+    function compareText(input, ref) {
+      let correct = 0;
+      const inputWords = input.trim().split(/\s+/);
+      const refWords = ref.trim().split(/\s+/);
+      for (let i = 0; i < refWords.length; i++) {
+        if (inputWords[i] === refWords[i]) correct++;
+      }
+      return correct / refWords.length;
+    }
+  </script>
+</body>
+</html>
