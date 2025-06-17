@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Typing Test</title>
+  <title>Typing Test with Auto Pause Timer</title>
   <style>
     body {
       margin: 0;
@@ -14,13 +14,11 @@
       background-size: 400% 400%;
       animation: gradientBG 15s ease infinite;
     }
-
     @keyframes gradientBG {
       0% {background-position: 0% 50%;}
       50% {background-position: 100% 50%;}
       100% {background-position: 0% 50%;}
     }
-
     .container {
       max-width: 800px;
       margin: auto;
@@ -30,18 +28,15 @@
       margin-top: 50px;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
     }
-
     h2 {
       text-align: center;
     }
-
     label, input {
       display: block;
       width: 100%;
       margin-bottom: 15px;
       font-size: 16px;
     }
-
     input {
       padding: 10px;
       border-radius: 8px;
@@ -50,13 +45,11 @@
       background: #333;
       color: #fff;
     }
-
     .error {
       color: #ff4d4d;
       margin-bottom: 10px;
       display: none;
     }
-
     #paragraph {
       background: #222;
       padding: 20px;
@@ -65,7 +58,6 @@
       font-size: 16px;
       line-height: 1.6;
     }
-
     textarea {
       width: 100%;
       height: 150px;
@@ -78,7 +70,6 @@
       resize: none;
       outline: none;
     }
-
     button {
       background: #00b894;
       border: none;
@@ -88,21 +79,18 @@
       font-size: 16px;
       cursor: pointer;
     }
-
     .timer {
       text-align: right;
       font-size: 20px;
       font-weight: bold;
       margin-bottom: 20px;
     }
-
     .results {
       background: #2d3436;
       padding: 20px;
       border-radius: 10px;
       margin-top: 20px;
     }
-
     .results p {
       margin: 10px 0;
     }
@@ -135,7 +123,6 @@
 
   <script>
     const paragraphs = [
-      `The future belongs to those who believe in the beauty of their dreams. Never let fear hold you back, and never underestimate your potential. With effort, consistency, and belief, you can achieve more than you imagine. Each day is a chance to improve, grow, and get closer to your goals. Never settle.`,
       `Technology is evolving every second, and those who stay ahead of the curve are the ones who shape the future. Stay curious, keep building your skills, and don't be afraid to make mistakes. Every failure teaches a new lesson. Success is nothing but a stack of failures you stood on.`,
       `Life is a journey of continuous learning. The more you seek, the more you grow. Stay humble, ask questions, read often, and share knowledge. Helping others along your path multiplies your own understanding. A growing mind is never alone.`,
       `Discipline, focus, and consistency are more powerful than bursts of motivation. Don't wait for the right moment—create it. Your habits define your identity, and small steps daily lead to massive results. Don’t stop until you're proud.`,
@@ -148,9 +135,36 @@
     ];
 
     let currentParaIndex = 0;
-    let timer;
-    let timeLeft = 60;
-    let startTime;
+    let totalDuration = 60;
+    let timeLeft = totalDuration;
+    let activeTimer;
+    let inactivityTimer;
+    let timerRunning = false;
+
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timeLeft / 60);
+      const seconds = timeLeft % 60;
+      document.getElementById("timer").innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function startMainTimer() {
+      if (timerRunning) return;
+      timerRunning = true;
+      activeTimer = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(activeTimer);
+          finishTest();
+          return;
+        }
+        timeLeft--;
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    function pauseMainTimer() {
+      clearInterval(activeTimer);
+      timerRunning = false;
+    }
 
     function startTyping() {
       const name = document.getElementById("name").value.trim();
@@ -159,49 +173,43 @@
       const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       let valid = true;
-
       if (!nameRegex.test(name)) {
         document.getElementById("nameError").style.display = "block";
         valid = false;
       } else {
         document.getElementById("nameError").style.display = "none";
       }
-
       if (!emailRegex.test(email)) {
         document.getElementById("emailError").style.display = "block";
         valid = false;
       } else {
         document.getElementById("emailError").style.display = "none";
       }
-
       if (!valid) return;
 
-      // Start typing test
       document.getElementById("user-info").style.display = "none";
       document.getElementById("test-area").style.display = "block";
-      document.getElementById("typing-box").disabled = false;
-      document.getElementById("typing-box").value = "";
       document.getElementById("paragraph").innerText = paragraphs[currentParaIndex];
-      startTime = new Date();
-      timeLeft = 60;
-      updateTimer();
-      timer = setInterval(updateTimer, 1000);
-    }
+      const typingBox = document.getElementById("typing-box");
+      typingBox.disabled = false;
+      typingBox.focus();
 
-    function updateTimer() {
-      const timerDisplay = document.getElementById("timer");
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      timerDisplay.innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+      timeLeft = totalDuration;
+      updateTimerDisplay();
 
-      if (timeLeft === 0) {
-        clearInterval(timer);
-        finishTest();
-      }
-      timeLeft--;
+      typingBox.addEventListener("input", () => {
+        clearTimeout(inactivityTimer);
+        startMainTimer();
+
+        inactivityTimer = setTimeout(() => {
+          pauseMainTimer();
+        }, 3000);
+      });
     }
 
     function finishTest() {
+      pauseMainTimer();
+      document.getElementById("typing-box").disabled = true;
       const typedText = document.getElementById("typing-box").value.trim();
       const originalText = paragraphs[currentParaIndex];
       const typedWords = typedText.split(/\s+/);
@@ -212,31 +220,9 @@
         if (word === originalWords[i]) correct++;
       });
 
-      const timeTaken = 60;
-      const wpm = Math.round((typedWords.length / timeTaken) * 60);
+      const wpm = Math.round((typedWords.length / totalDuration) * 60);
       const accuracy = ((correct / originalWords.length) * 100).toFixed(2);
 
-      // Send data to Google Sheet
-      fetch('https://script.google.com/macros/s/AKfycbymSTZefAFw5DJF-ewZ2S7KkBL15uoan_m2GzoGoNdtJkq17GwnA3tJasYr1n1sPPBg/exec/exec', {
-        method: 'POST',
-        body: JSON.stringify({
-          name: document.getElementById("name").value,
-          email: document.getElementById("email").value,
-          wpm: wpm,
-          accuracy: accuracy,
-          totalWords: typedWords.length,
-          correctWords: correct,
-          paraNo: currentParaIndex + 1
-        }),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
-      .then(res => res.text())
-      .then(res => console.log("Google Sheet Response:", res))
-      .catch(err => console.error("Error sending to Sheet:", err));
-
-      document.getElementById("typing-box").disabled = true;
       const resultBox = document.getElementById("results");
       resultBox.innerHTML = `
         <h3>Test Result</h3>
@@ -249,12 +235,11 @@
       `;
       resultBox.style.display = 'block';
 
-      // prepare for next user
-      currentParaIndex = (currentParaIndex + 1) % paragraphs.length;
       document.getElementById("user-info").style.display = "block";
       document.getElementById("test-area").style.display = "none";
       document.getElementById("name").value = "";
       document.getElementById("email").value = "";
+      document.getElementById("typing-box").value = "";
     }
   </script>
 </body>
