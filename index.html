@@ -239,21 +239,18 @@ fetch("https://script.google.com/macros/s/AKfycbz1DbXyee9LjxRBOiL9yt9wTdRR-VOFw5
     "Content-Type": "application/json"
   },
   body: JSON.stringify({
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    wpm: wpm,
-    accuracy: accuracy,
-    totalWords: typedWords.length,
-    correctWords: correct
+    name: "Test User",
+    email: "test@example.com",
+    wpm: 45,
+    accuracy: 92.3,
+    totalWords: 50,
+    correctWords: 46
   })
 })
-.then(response => response.text())
-.then(data => {
-  console.log("Google Sheet Response:", data);
-})
-.catch(error => {
-  console.error("Error saving to Google Sheet:", error);
-});
+.then(res => res.text())
+.then(console.log)
+.catch(console.error);
+
 
       resultBox.style.display = 'block';
       document.getElementById("user-info").style.display = "block";
