@@ -217,7 +217,7 @@
       const accuracy = ((correct / originalWords.length) * 100).toFixed(2);
 
       // Send data to Google Sheet
-      fetch('https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbymSTZefAFw5DJF-ewZ2S7KkBL15uoan_m2GzoGoNdtJkq17GwnA3tJasYr1n1sPPBg/exec/exec', {
+      fetch('https://script.google.com/macros/s/AKfycbymSTZefAFw5DJF-ewZ2S7KkBL15uoan_m2GzoGoNdtJkq17GwnA3tJasYr1n1sPPBg/exec/exec', {
         method: 'POST',
         body: JSON.stringify({
           name: document.getElementById("name").value,
