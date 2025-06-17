@@ -233,8 +233,29 @@
         <p><strong>Paragraph:</strong> ${currentParaIndex + 1}/10</p>
         <p><strong>User:</strong> ${document.getElementById("name").value} (${document.getElementById("email").value})</p>
       `;
-      resultBox.style.display = 'block';
+fetch("https://script.google.com/macros/s/AKfycbz1DbXyee9LjxRBOiL9yt9wTdRR-VOFw51snNxa3rWOLMTtU__RL_WqSXeGVv4HJYwB/exec", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    wpm: wpm,
+    accuracy: accuracy,
+    totalWords: typedWords.length,
+    correctWords: correct
+  })
+})
+.then(response => response.text())
+.then(data => {
+  console.log("Google Sheet Response:", data);
+})
+.catch(error => {
+  console.error("Error saving to Google Sheet:", error);
+});
 
+      resultBox.style.display = 'block';
       document.getElementById("user-info").style.display = "block";
       document.getElementById("test-area").style.display = "none";
       document.getElementById("name").value = "";
