@@ -79,6 +79,15 @@
       font-size: 16px;
       cursor: pointer;
     }
+    #finalSubmitBtn {
+      display: none;
+      background-color: #0984e3;
+      margin-top: 20px;
+      transition: 0.3s ease;
+    }
+    #finalSubmitBtn:hover {
+      background-color: #74b9ff;
+    }
     .timer {
       text-align: right;
       font-size: 20px;
@@ -119,19 +128,12 @@
     </div>
 
     <div class="results" id="results" style="display:none;"></div>
+    <button id="finalSubmitBtn" onclick="submitToSheet()">Submit</button>
   </div>
 
   <script>
     const paragraphs = [
-      `Technology is evolving every second, and those who stay ahead of the curve are the ones who shape the future. Stay curious, keep building your skills, and don't be afraid to make mistakes. Every failure teaches a new lesson. Success is nothing but a stack of failures you stood on.`,
-      `Life is a journey of continuous learning. The more you seek, the more you grow. Stay humble, ask questions, read often, and share knowledge. Helping others along your path multiplies your own understanding. A growing mind is never alone.`,
-      `Discipline, focus, and consistency are more powerful than bursts of motivation. Don't wait for the right moment—create it. Your habits define your identity, and small steps daily lead to massive results. Don’t stop until you're proud.`,
-      `In the world of innovation, your ability to adapt is your superpower. Ideas may be abundant, but execution is rare. Show up, iterate, and push through discomfort. Success loves speed, but mastery loves patience. Embrace both.`,
-      `The real strength lies not in perfection but in progress. Comparison is the thief of joy—focus on being better than yesterday. Celebrate small wins, build momentum, and keep moving forward no matter what challenges appear.`,
-      `Great minds are not born—they are built through dedication, perseverance, and reflection. Every expert was once a beginner who refused to quit. Stay the course, trust the process, and let your journey be your strength.`,
-      `Knowledge is power, but applied knowledge is freedom. Don't just learn—implement. The real magic happens outside your comfort zone. Stretch your limits and you’ll stretch what’s possible.`,
-      `Creativity comes when you're not afraid to be wrong. Don’t seek approval—seek expression. The most unique ideas are often the most misunderstood. Believe in your vision and let your work speak.`,
-      `Success is not about how fast you go, but how steady you stay. When you're tired, learn to rest, not quit. Every effort counts and consistency compounds over time. You’re closer than you think.`
+      `Technology is evolving every second, and those who stay ahead of the curve are the ones who shape the future. Stay curious, keep building your skills, and don't be afraid to make mistakes. Every failure teaches a new lesson. Success is nothing but a stack of failures you stood on.`
     ];
 
     let currentParaIndex = 0;
@@ -230,39 +232,48 @@
         <p><strong>Accuracy:</strong> ${accuracy}%</p>
         <p><strong>Total Words Typed:</strong> ${typedWords.length}</p>
         <p><strong>Correct Words:</strong> ${correct}</p>
-        <p><strong>Paragraph:</strong> ${currentParaIndex + 1}/10</p>
+        <p><strong>Paragraph:</strong> ${currentParaIndex + 1}/1</p>
         <p><strong>User:</strong> ${document.getElementById("name").value} (${document.getElementById("email").value})</p>
       `;
-fetch("https://script.google.com/macros/s/AKfycbz1DbXyee9LjxRBOiL9yt9wTdRR-VOFw51snNxa3rWOLMTtU__RL_WqSXeGVv4HJYwB/exec", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    name: document.getElementById("name").value,
-    email: document.getElementById("email").value,
-    wpm: wpm,
-    accuracy: accuracy,
-    totalWords: typedWords.length,
-    correctWords: correct
-  })
-})
-.then(response => response.text())
-.then(data => {
-  console.log("Google Sheet Response:", data);
-})
-.catch(error => {
-  console.error("Error saving to Google Sheet:", error);
-});
-
-
 
       resultBox.style.display = 'block';
-      document.getElementById("user-info").style.display = "block";
+      document.getElementById("finalSubmitBtn").style.display = "inline-block";
+
+      // Save for final submit
+      window.resultData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        wpm: wpm,
+        accuracy: accuracy,
+        totalWords: typedWords.length,
+        correctWords: correct
+      };
+
       document.getElementById("test-area").style.display = "none";
-      document.getElementById("name").value = "";
-      document.getElementById("email").value = "";
-      document.getElementById("typing-box").value = "";
+    }
+
+    function submitToSheet() {
+      fetch("https://script.google.com/macros/s/AKfycbz1DbXyee9LjxRBOiL9yt9wTdRR-VOFw51snNxa3rWOLMTtU__RL_WqSXeGVv4HJYwB/exec", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(window.resultData)
+      })
+      .then(response => response.text())
+      .then(data => {
+        alert("✅ Your result has been submitted!");
+        document.getElementById("user-info").style.display = "block";
+        document.getElementById("results").style.display = "none";
+        document.getElementById("finalSubmitBtn").style.display = "none";
+        document.getElementById("name").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("typing-box").value = "";
+      })
+      .catch(error => {
+        console.error("❌ Error submitting to Google Sheet:", error);
+        alert("Error! Please try again.");
+      });
     }
   </script>
 </body>
