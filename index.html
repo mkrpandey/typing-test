@@ -80,8 +80,7 @@
 </head>
 <body>
   <div class="container">
-    <h2> 🖋 Typing Speed Test</h2>
-
+    <h2>🖋 Typing Speed Test</h2>
     <div id="user-info">
       <label>Name <span style="color:red">*</span></label>
       <input type="text" id="name" placeholder="Enter your name" />
@@ -91,7 +90,7 @@
       <input type="email" id="email" placeholder="Enter your email" />
       <div class="error" id="emailError">Please enter a valid email.</div>
 
-      <button id="startBtn" onclick="startTyping()">Start Test</button>
+      <button id="startBtn">Start Test</button>
     </div>
 
     <div id="test-area" style="display:none;">
@@ -101,20 +100,30 @@
     </div>
 
     <div class="results" id="results" style="display:none;"></div>
-    <button id="finalSubmitBtn" onclick="submitToSheet()">Submit</button>
+    <button id="finalSubmitBtn">Submit</button>
   </div>
 
   <script>
     const paragraphs = [
-      "Typing helps you improve your focus, accuracy, and speed. Regular practice strengthens your ability to work on keyboards without looking.",
-      "Discipline is the bridge between goals and achievement. Without consistent effort, even the most talented individuals may fail to reach their potential."
+      `The morning sun rose gently over the quiet village, casting golden hues across the rooftops. Birds chirped cheerfully as the streets slowly filled with the sounds of daily life. A boy with a basket of flowers hurried down the path, waving at his neighbors as he went. The aroma of fresh bread from the bakery filled the air, promising a good start to the day.`,
+      `A gentle breeze rustled the leaves as she sat under the ancient oak tree, reading her favorite book. The words on the page took her to faraway places, to lands of dragons, knights, and hidden treasures. In that moment, reality faded, and imagination painted the sky with colors of wonder.`,
+      `Discipline is the bridge between goals and achievement. Without consistent effort and focus, even the most talented individuals can fall short of their potential. Whether it’s waking up early, sticking to a routine, or resisting distractions, self-discipline plays a key role in success.`,
+      `In a world dominated by screens and instant communication, the value of face-to-face conversation is sometimes overlooked. Genuine eye contact, shared laughter, and thoughtful silence cannot be replaced by text or emojis. Human connection remains the heart of meaningful relationships.`,
+      `Rain poured heavily against the windows, creating a rhythmic tapping that echoed through the house. Inside, it was warm and quiet. She wrapped herself in a blanket and sipped her tea, watching droplets race each other down the glass. Outside was chaos, but in here, it felt like peace.`,
+      `The internet has transformed education in countless ways. From online courses to virtual classrooms, learning is now more accessible than ever before. Students from different parts of the world can collaborate, ask questions, and share ideas, breaking down the barriers once created by distance.`,
+      `The stars shimmered above like tiny lanterns in the night sky. He lay on the grass, counting constellations and wondering about the universe. Was there life beyond Earth? How far did space stretch? These questions floated through his mind, as the vastness above reminded him how small he truly was.`,
+      `The engine roared as the car sped down the winding road, trees blurring past in a mix of green and gold. Music blasted from the speakers, and laughter filled the air. It wasn’t just a drive—it was freedom, a temporary escape from the pressures of daily life.`
     ];
 
     let totalDuration = 60;
     let timeLeft = totalDuration;
-    let timer;
+    let activeTimer;
+    let inactivityTimer;
+    let timerRunning = false;
     let selectedText = "";
-    let resultData = {};
+
+    document.getElementById("startBtn").addEventListener("click", startTyping);
+    document.getElementById("finalSubmitBtn").addEventListener("click", submitToSheet);
 
     function updateTimerDisplay() {
       const minutes = Math.floor(timeLeft / 60);
@@ -122,11 +131,30 @@
       document.getElementById("timer").innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
     }
 
+    function startMainTimer() {
+      if (timerRunning) return;
+      timerRunning = true;
+      activeTimer = setInterval(() => {
+        if (timeLeft <= 0) {
+          clearInterval(activeTimer);
+          finishTest();
+          return;
+        }
+        timeLeft--;
+        updateTimerDisplay();
+      }, 1000);
+    }
+
+    function pauseMainTimer() {
+      clearInterval(activeTimer);
+      timerRunning = false;
+    }
+
     function startTyping() {
       const name = document.getElementById("name").value.trim();
       const email = document.getElementById("email").value.trim();
       const nameRegex = /^[a-zA-Z ]+$/;
-      const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
       let valid = true;
       if (!nameRegex.test(name)) {
@@ -135,7 +163,6 @@
       } else {
         document.getElementById("nameError").style.display = "none";
       }
-
       if (!emailRegex.test(email)) {
         document.getElementById("emailError").style.display = "block";
         valid = false;
@@ -147,88 +174,93 @@
 
       document.getElementById("user-info").style.display = "none";
       document.getElementById("test-area").style.display = "block";
-      document.getElementById("typing-box").disabled = false;
 
       selectedText = paragraphs[Math.floor(Math.random() * paragraphs.length)];
-      document.getElementById("paragraph").innerText = selectedText;
-      document.getElementById("typing-box").focus();
+      renderParagraph();
 
+      const typingBox = document.getElementById("typing-box");
+      typingBox.disabled = false;
+      typingBox.focus();
       timeLeft = totalDuration;
       updateTimerDisplay();
 
-      timer = setInterval(() => {
-        timeLeft--;
-        updateTimerDisplay();
-        if (timeLeft <= 0) {
-          clearInterval(timer);
-          finishTest();
+      typingBox.addEventListener("input", () => {
+        clearTimeout(inactivityTimer);
+        startMainTimer();
+        inactivityTimer = setTimeout(() => pauseMainTimer(), 2000);
+        renderParagraph();
+      });
+    }
+
+    function renderParagraph() {
+      const typedText = document.getElementById("typing-box").value;
+      let html = "";
+      for (let i = 0; i < selectedText.length; i++) {
+        if (i < typedText.length) {
+          html += `<span style="color:#fff">${selectedText[i]}</span>`;
+        } else if (i === typedText.length) {
+          html += `<span class="highlight">${selectedText[i]}</span>`;
+        } else {
+          html += `<span>${selectedText[i]}</span>`;
         }
-      }, 1000);
+      }
+      document.getElementById("paragraph").innerHTML = html;
     }
 
     function finishTest() {
-      clearInterval(timer);
-      document.getElementById("typing-box").disabled = true;
-      document.getElementById("test-area").style.display = "none";
-
-      const typed = document.getElementById("typing-box").value.trim();
-      const typedWords = typed.split(/\s+/);
+      pauseMainTimer();
+      const typedText = document.getElementById("typing-box").value.trim();
       const originalWords = selectedText.split(/\s+/);
+      const typedWords = typedText.split(/\s+/);
 
       let correct = 0;
-      typedWords.forEach((w, i) => {
-        if (w === originalWords[i]) correct++;
+      typedWords.forEach((word, i) => {
+        if (word === originalWords[i]) correct++;
       });
 
       const wpm = Math.round((typedWords.length / totalDuration) * 60);
       const accuracy = ((correct / originalWords.length) * 100).toFixed(2);
 
-      resultData = {
-        name: document.getElementById("name").value.trim(),
-        email: document.getElementById("email").value.trim(),
-        wpm,
-        accuracy,
-        totalWords: typedWords.length,
-        correctWords: correct
-      };
+      document.getElementById("typing-box").disabled = true;
+      document.getElementById("test-area").style.display = "none";
 
       document.getElementById("results").innerHTML = `
         <h3>Test Result</h3>
         <p><strong>WPM:</strong> ${wpm}</p>
         <p><strong>Accuracy:</strong> ${accuracy}%</p>
-        <p><strong>Total Words:</strong> ${typedWords.length}</p>
+        <p><strong>Total Words Typed:</strong> ${typedWords.length}</p>
         <p><strong>Correct Words:</strong> ${correct}</p>
+        <p><strong>User:</strong> ${document.getElementById("name").value} (${document.getElementById("email").value})</p>
       `;
       document.getElementById("results").style.display = "block";
       document.getElementById("finalSubmitBtn").style.display = "block";
+
+      window.resultData = {
+        name: document.getElementById("name").value,
+        email: document.getElementById("email").value,
+        wpm,
+        accuracy,
+        totalWords: typedWords.length,
+        correctWords: correct
+      };
     }
 
     function submitToSheet() {
-      const url = 'https://script.google.com/macros/s/AKfycbwfZ3gy5_fZC3TDZPRNHcCO_prl4KouN4hmp0diqeklu1t6NXdpXrQNEJeaX5NArA8/exec';
-
-      fetch(url, {
+      fetch('https://script.google.com/macros/s/AKfycbwfZ3gy5_fZC3TDZPRNHcCO_prl4KouN4hmp0diqeklu1t6NXdpXrQNEJeaX5NArA8/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(resultData)
+        body: JSON.stringify(window.resultData)
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.success) {
-            alert("✅ Submitted Successfully!");
-            window.location.reload();
-          } else {
-            alert("❌ Submission failed: " + data.error);
-          }
-        })
-        .catch(error => {
-          alert("❌ Error: " + error.message);
-        });
+      .then(res => res.text())
+      .then(data => {
+        alert("✅ Submitted Successfully!");
+        location.reload();
+      })
+      .catch(err => {
+        alert("❌ Failed to submit. Please try again.");
+        console.error(err);
+      });
     }
-
-    // Enable Start button just in case it's stuck disabled
-    window.onload = () => {
-      document.getElementById("startBtn").disabled = false;
-    };
   </script>
 </body>
 </html>
