@@ -80,7 +80,7 @@
 </head>
 <body>
   <div class="container">
-    <h2>🖋 Typing Speed Test</h2>
+    <h2>🔋 Typing Speed Test</h2>
     <div id="user-info">
       <label>Name <span style="color:red">*</span></label>
       <input type="text" id="name" placeholder="Enter your name" />
@@ -245,41 +245,33 @@
       };
     }
 
-function submitToSheet() {
-  const formBaseURL = "https://docs.google.com/forms/d/1Z2gTfIr7xMQzrc2T5SIvU_Z1EI04f30-71nBs-ZuCKI/prefill/formResponse"; // use your real form ID
-  
-  const params = new URLSearchParams({
-    "entry.1045781291": window.resultData.name,
-    "entry.2045783210": window.resultData.email,
-    "entry.3056721981": window.resultData.wpm,
-    "entry.4086721902": window.resultData.accuracy,
-    "entry.5098718230": window.resultData.totalWords,
-    "entry.6123456789": window.resultData.correctWords
-  });
+    function submitToSheet() {
+      const formBaseURL = "https://docs.google.com/forms/d/e/your-form-ID/formResponse"; // replace with your form's real POST URL
+      const params = new URLSearchParams({
+        "entry.1045781291": window.resultData.name,
+        "entry.2045783210": window.resultData.email,
+        "entry.3056721981": window.resultData.wpm,
+        "entry.4086721902": window.resultData.accuracy,
+        "entry.5098718230": window.resultData.totalWords,
+        "entry.6123456789": window.resultData.correctWords
+      });
 
-  const finalURL = `${formBaseURL}?${params.toString()}`;
-
-  window.open(finalURL, "_blank"); // open in new tab
-}
-
-  fetch(`${formBaseURL}?${params.toString()}`, {
-    method: "POST",
-    mode: "no-cors",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
+      fetch(`${formBaseURL}?${params.toString()}`, {
+        method: "POST",
+        mode: "no-cors",
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }
+      })
+      .then(() => {
+        alert("\u2705 Submitted successfully!");
+        location.reload();
+      })
+      .catch((error) => {
+        alert("\u274C Submission failed.");
+        console.error("Error:", error);
+      });
     }
-  })
-  .then(() => {
-    alert("✅ Submitted successfully!");
-    location.reload();
-  })
-  .catch((error) => {
-    alert("❌ Submission failed.");
-    console.error("Error:", error);
-  });
-}
-
-
   </script>
 </body>
 </html>
