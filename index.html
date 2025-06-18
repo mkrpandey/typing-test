@@ -226,11 +226,12 @@
 
       document.getElementById("results").innerHTML = `
         <h3>Test Result</h3>
+        <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
+         <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
         <p><strong>WPM:</strong> ${wpm}</p>
         <p><strong>Accuracy:</strong> ${accuracy}%</p>
         <p><strong>Total Words Typed:</strong> ${typedWords.length}</p>
         <p><strong>Correct Words:</strong> ${correct}</p>
-        <p><strong>User:</strong> ${document.getElementById("name").value} (${document.getElementById("email").value})</p>
       `;
       document.getElementById("results").style.display = "block";
       document.getElementById("finalSubmitBtn").style.display = "block";
