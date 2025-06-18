@@ -209,20 +209,20 @@
     }
 
    function submitToSheet() {
-  fetch("https://script.google.com/macros/s/AKfycbyGB3OyCcTIU3kK3KV_3srQlhw3hY1oNc19CZa-EgQOYK1srx2wSPdCUV4SnEhNj1i8/exec", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(window.resultData) 
-  })
-  .then(res => res.text())
-  .then(data => {
-    alert("✅ Submitted Successfully!");
-    location.reload();
-  })
-  .catch(err => {
-    console.error("❌ Submission failed:", err);
-    alert("Failed to submit. Try again.");
-  });
+ fetch("https://script.google.com/macros/s/AKfycbyXv-1UwPPWRLTCWode8f9jCpZdbvOmFD_4lAf0J4NDK5WSBkjZRN6V9eM6-2RLrRXa/exec", {
+  method: "POST",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify(window.resultData)
+})
+.then(res => res.text())
+.then(data => {
+  alert("✅ Submitted Successfully!");
+  location.reload();
+})
+.catch(err => {
+  alert("Failed to submit. Try again.");
+});
+
 }
 
   </script>
