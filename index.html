@@ -244,11 +244,12 @@
     }
 
     function submitToSheet() {
-      fetch("https://script.google.com/macros/s/AKfycbygKCbecDqqWb31kLwmNeNOkaBNPfYjDXiA0FszqoctOJBGfKYYBaSbThmAkp_FojVd/exec", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(window.resultData)
-          })
+     fetch('https://script.google.com/macros/s/AKfycbwfZ3gy5_fZC3TDZPRNHcCO_prl4KouN4hmp0diqeklu1t6NXdpXrQNEJeaX5NArA8/exec', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ test: 'hello' })
+      })
+
 
       .then(res => res.text())
       .then(data => {
