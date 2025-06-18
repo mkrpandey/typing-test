@@ -245,22 +245,23 @@
       };
     }
 
-    function submitToSheet() {
-      fetch('https://script.google.com/macros/s/AKfycbwfZ3gy5_fZC3TDZPRNHcCO_prl4KouN4hmp0diqeklu1t6NXdpXrQNEJeaX5NArA8/exec', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(window.resultData)
-      })
-      .then(res => res.text())
-      .then(data => {
-        alert("✅ Submitted Successfully!");
-        location.reload();
-      })
-      .catch(err => {
-        alert("Failed to submit. Please try again.");
-        console.error(err);
-      });
-    }
+   function submitToSheet() {
+  const formBaseURL = "https://docs.google.com/forms/d/1Z2gTfIr7xMQzrc2T5SIvU_Z1EI04f30-71nBs-ZuCKI/prefill";
+
+  const params = new URLSearchParams({
+    "entry.1111111111": window.resultData.name,
+    "entry.2222222222": window.resultData.email,
+    "entry.3333333333": window.resultData.wpm,
+    "entry.4444444444": window.resultData.accuracy,
+    "entry.5555555555": window.resultData.totalWords,
+    "entry.6666666666": window.resultData.correctWords
+  });
+
+  const finalURL = `${formBaseURL}&${params.toString()}`;
+
+  window.open(finalURL, "_blank"); // or window.location.href = finalURL to redirect same tab
+}
+
   </script>
 </body>
 </html>
