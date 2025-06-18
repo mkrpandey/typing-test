@@ -245,10 +245,11 @@
 
     function submitToSheet() {
       fetch("https://script.google.com/macros/s/AKfycbyXv-1UwPPWRLTCWode8f9jCpZdbvOmFD_4lAf0J4NDK5WSBkjZRN6V9eM6-2RLrRXa/exec", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(window.resultData)
-      })
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(window.resultData)
+          })
+
       .then(res => res.text())
       .then(data => {
         alert("✅ Submitted Successfully!");
