@@ -184,7 +184,7 @@ function startTyping() {
   const name = document.getElementById("name").value.trim();
   const email = document.getElementById("email").value.trim();
   const nameRegex = /^[a-zA-Z ]+$/;
-  const emailRegex = /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/;
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   let valid = true;
   if (!nameRegex.test(name)) {
