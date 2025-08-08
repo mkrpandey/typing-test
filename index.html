@@ -189,163 +189,174 @@
   ];
 
  let totalDuration = 60;
-    let timeLeft = totalDuration;
-    let activeTimer;
-    let inactivityTimer;
-    let timerRunning = false;
-    let selectedText = "";
+  let timeLeft = totalDuration;
+  let activeTimer;
+  let inactivityTimer;
+  let timerRunning = false;
+  let selectedText = "";
 
-    document.getElementById("startBtn").addEventListener("click", startTyping);
-    document.getElementById("finalSubmitBtn").addEventListener("click", submitToSheet);
+  function startTyping() {
+    const name = document.getElementById("name").value.trim();
+    const email = document.getElementById("email").value.trim();
+    const nameRegex = /^[a-zA-Z ]+$/;
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-    function updateTimerDisplay() {
-      const minutes = Math.floor(timeLeft / 60);
-      const seconds = timeLeft % 60;
-      document.getElementById("timer").innerText = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+    let valid = true;
+    if (!nameRegex.test(name)) {
+      document.getElementById("nameError").style.display = "block";
+      valid = false;
+    } else {
+      document.getElementById("nameError").style.display = "none";
     }
 
-    function startMainTimer() {
-      if (timerRunning) return;
-      timerRunning = true;
-      activeTimer = setInterval(() => {
-        if (timeLeft <= 0) {
-          clearInterval(activeTimer);
-          finishTest();
-          return;
-        }
-        timeLeft--;
-        updateTimerDisplay();
-      }, 1000);
+    if (!emailRegex.test(email)) {
+      document.getElementById("emailError").style.display = "block";
+      valid = false;
+    } else {
+      document.getElementById("emailError").style.display = "none";
     }
 
-    function pauseMainTimer() {
-      clearInterval(activeTimer);
-      timerRunning = false;
-    }
+    if (!valid) return;
 
-    function startTyping() {
-      const name = document.getElementById("name").value.trim();
-      const email = document.getElementById("email").value.trim();
-      const nameRegex = /^[a-zA-Z ]+$/;
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    document.getElementById("loginPage").style.display = "none";
+    document.getElementById("test-area").style.display = "block";
 
-      let valid = true;
-      if (!nameRegex.test(name)) {
-        document.getElementById("nameError").style.display = "block";
-        valid = false;
-      } else {
-        document.getElementById("nameError").style.display = "none";
-      }
-      if (!emailRegex.test(email)) {
-        document.getElementById("emailError").style.display = "block";
-        valid = false;
-      } else {
-        document.getElementById("emailError").style.display = "none";
-      }
+    // ✅ Randomly select a different paragraph every time
+    selectedText = paragraphs[Math.floor(Math.random() * paragraphs.length)];
+    renderParagraph();
 
-      if (!valid) return;
+    const typingBox = document.getElementById("typing-box");
+    typingBox.disabled = false;
+    typingBox.focus();
+    timeLeft = totalDuration;
+    updateTimerDisplay();
 
-      document.getElementById("user-info").style.display = "none";
-      document.getElementById("test-area").style.display = "block";
-
-      selectedText = paragraphs[Math.floor(Math.random() * paragraphs.length)];
+    typingBox.addEventListener("input", () => {
+      clearTimeout(inactivityTimer);
+      startMainTimer();
+      inactivityTimer = setTimeout(() => pauseMainTimer(), 1000);
       renderParagraph();
+    });
+  }
 
-      const typingBox = document.getElementById("typing-box");
-      typingBox.disabled = false;
-      typingBox.focus();
-      timeLeft = totalDuration;
+  function updateTimerDisplay() {
+    const minutes = Math.floor(timeLeft / 60);
+    const seconds = timeLeft % 60;
+    document.getElementById("timer").innerText = ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')};
+  }
+
+  function startMainTimer() {
+    if (timerRunning) return;
+    timerRunning = true;
+    activeTimer = setInterval(() => {
+      timeLeft--;
       updateTimerDisplay();
-
-      typingBox.addEventListener("input", () => {
-        clearTimeout(inactivityTimer);
-        startMainTimer();
-        inactivityTimer = setTimeout(() => pauseMainTimer(), 2000);
-        renderParagraph();
-      });
-    }
-
-    function renderParagraph() {
-      const typedText = document.getElementById("typing-box").value;
-      let html = "";
-      for (let i = 0; i < selectedText.length; i++) {
-        if (i < typedText.length) {
-          html += `<span style="color:#fff">${selectedText[i]}</span>`;
-        } else if (i === typedText.length) {
-          html += `<span class="highlight">${selectedText[i]}</span>`;
-        } else {
-          html += `<span>${selectedText[i]}</span>`;
-        }
+      if (timeLeft <= 0) {
+        clearInterval(activeTimer);
+        finishTest();
       }
-      document.getElementById("paragraph").innerHTML = html;
-    }
+    }, 1000);
+  }
 
-    function finishTest() {
-      pauseMainTimer();
-      const typedText = document.getElementById("typing-box").value.trim();
-      const originalWords = selectedText.split(/\s+/);
-      const typedWords = typedText.split(/\s+/);
+  function pauseMainTimer() {
+    clearInterval(activeTimer);
+    timerRunning = false;
+  }
 
-      let correct = 0;
-      typedWords.forEach((word, i) => {
-        if (word === originalWords[i]) correct++;
-      });
-
-      const wpm = Math.round((typedWords.length / totalDuration) * 60);
-      const accuracy = ((correct / originalWords.length) * 100).toFixed(2);
-
-      document.getElementById("typing-box").disabled = true;
-      document.getElementById("test-area").style.display = "none";
-
-      document.getElementById("results").innerHTML = `
-        <h3>Test Result</h3>
-        <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
-         <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
-        <p><strong>WPM:</strong> ${wpm}</p>
-        <p><strong>Accuracy:</strong> ${accuracy}%</p>
-        <p><strong>Total Words Typed:</strong> ${typedWords.length}</p>
-        <p><strong>Correct Words:</strong> ${correct}</p>
-      `;
-      document.getElementById("results").style.display = "block";
-      document.getElementById("finalSubmitBtn").style.display = "block";
-
-      window.resultData = {
-        name: document.getElementById("name").value,
-        email: document.getElementById("email").value,
-        wpm,
-        accuracy,
-        totalWords: typedWords.length,
-        correctWords: correct
-      };
-    }
-
-    function submitToSheet() {
-      const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdrV_MCvdC0-v-EY9QLUAcUh15cAX-0Cbc8pbmyqEcSswuwFQ/formResponse"; // replace with your form's real POST URL
-      const params = new URLSearchParams({
-        "entry.1239245755": window.resultData.name,
-        "entry.1202560839": window.resultData.email,
-        "entry.1945685852": window.resultData.wpm,
-        "entry.710656876": window.resultData.accuracy,
-        "entry.1233596875": window.resultData.totalWords,
-        "entry.1193619231": window.resultData.correctWords
-      });
-
-      fetch(`${formBaseURL}?${params.toString()}`, {
-        method: "POST",
-        mode: "no-cors",
-        headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+  function renderParagraph() {
+    const typedText = document.getElementById("typing-box").value;
+    let html = "";
+    for (let i = 0; i < selectedText.length; i++) {
+      if (i < typedText.length) {
+        const correctChar = selectedText[i];
+        const typedChar = typedText[i];
+        if (typedChar === correctChar) {
+          html += <span class="correct">${correctChar}</span>;
+        } else {
+          html += <span class="incorrect">${correctChar}</span>;
         }
-      })
-      .then(() => {
-        alert("\u2705 ✅ Submitted successfully!");
-        location.reload();
-      })
-      .catch((error) => {
-        alert("\u274C ❌ Submission failed.");
-        console.error("Error:", error);
-      });
+      } else if (i === typedText.length) {
+        html += <span class="highlight">${selectedText[i]}</span>;
+      } else {
+        html += <span>${selectedText[i]}</span>;
+      }
     }
-  </script>
+    document.getElementById("paragraph").innerHTML = html;
+  }
+
+function finishTest() {
+  pauseMainTimer();
+
+  const typedText = document.getElementById("typing-box").value.trim();
+  const originalText = selectedText.trim();
+
+  const typedWords = typedText.split(/\s+/).filter(w => w.length > 0);
+  const originalWords = originalText.split(/\s+/).filter(w => w.length > 0);
+
+  let correctWords = 0;
+  const wordCount = Math.min(typedWords.length, originalWords.length);
+
+  for (let i = 0; i < wordCount; i++) {
+    if (typedWords[i] === originalWords[i]) correctWords++;
+  }
+
+  const totalWords = typedWords.length;
+  const accuracy = totalWords > 0 ? Math.round((correctWords / totalWords) * 100) : 0;
+
+  const timeTaken = totalDuration - timeLeft;
+  const wpm = timeTaken > 0 ? Math.round((totalWords / timeTaken) * 60) : 0;
+
+  document.getElementById("typing-box").disabled = true;
+  document.getElementById("test-area").style.display = "none";
+
+  document.getElementById("results").innerHTML = 
+    <h3>Test Result</h3>
+    <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
+    <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
+    <p><strong>WPM:</strong> ${wpm}</p>
+    <p><strong>Accuracy:</strong> ${accuracy}%</p>
+    <p><strong>Total Words Typed:</strong> ${totalWords}</p>
+    <p><strong>Correct Words:</strong> ${correctWords}</p>
+  ;
+  document.getElementById("results").style.display = "block";
+  document.getElementById("finalSubmitBtn").style.display = "block";
+
+  window.resultData = {
+    name: document.getElementById("name").value,
+    email: document.getElementById("email").value,
+    wpm,
+    accuracy,
+    totalWords,
+    correctWords
+  };
+}
+  function submitToSheet() {
+    const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdrV_MCvdC0-v-EY9QLUAcUh15cAX-0Cbc8pbmyqEcSswuwFQ/formResponse"; // replace with your form's real POST URL
+    const params = new URLSearchParams({
+      "entry.1239245755": window.resultData.name,
+      "entry.1202560839": window.resultData.email,
+      "entry.1945685852": window.resultData.wpm,
+      "entry.710656876": window.resultData.accuracy,
+      "entry.1233596875": window.resultData.totalWords,
+      "entry.1193619231": window.resultData.correctWords
+    });
+
+    fetch(${formBaseURL}?${params.toString()}, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded"
+      }
+    })
+    .then(() => {
+      alert("✅ Submitted successfully!");
+      location.reload();
+    })
+    .catch((error) => {
+      alert("❌ Submission failed.");
+      console.error("Error:", error);
+    });
+  }
+</script>
 </body>
 </html>
