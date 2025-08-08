@@ -295,15 +295,25 @@ function finishTest() {
   document.getElementById("test-area").style.display = "none";
 
   document.getElementById("results").innerHTML = `
-    <h3>Test Result</h3>
-    <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
-    <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
-    <p><strong>WPM:</strong> ${wpm}</p>
-    <p><strong>Accuracy:</strong> ${accuracy}%</p>
-    <p><strong>Total Words Typed:</strong> ${totalWords}</p>
-    <p><strong>Correct Words:</strong> ${correctWords}</p>
-    <button onclick="submitToSheet()" id="finalSubmitBtn">Submit Results</button>
-  `;
+  <h3>Test Result</h3>
+  <p><strong>Name:</strong> ${window.resultData.name}</p>
+  <p><strong>Email:</strong> ${window.resultData.email}</p>
+  <p><strong>WPM:</strong> ${window.resultData.wpm}</p>
+  <p><strong>Accuracy:</strong> ${window.resultData.accuracy}%</p>
+  <p><strong>Total Words Typed:</strong> ${window.resultData.totalWords}</p>
+  <p><strong>Correct Words:</strong> ${window.resultData.correctWords}</p>
+  <button id="finalSubmitBtn" onclick="submitToSheet()" style="
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    margin-top: 15px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+  ">📤 Submit Result</button>
+`;
+
   document.getElementById("results").style.display = "block";
 
   window.resultData = {
