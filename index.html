@@ -159,9 +159,22 @@
   <textarea id="typing-box" disabled placeholder="Start typing here..."></textarea>
 </div>
 
-<!-- Results -->
-<div class="container" id="results"></div>
-<div class="container"><button id="finalSubmitBtn" onclick="submitToSheet()">Submit</button></div>
+<div id="results" style="display:none;">
+    <h3>Test Result</h3>
+    <p><strong>Name:</strong> <span id="resName"></span></p>
+    <p><strong>Email:</strong> <span id="resEmail"></span></p>
+    <p><strong>WPM:</strong> <span id="resWpm"></span></p>
+    <p><strong>Accuracy:</strong> <span id="resAccuracy"></span>%</p>
+    <p><strong>Total Words Typed:</strong> <span id="resTotalWords"></span></p>
+    <p><strong>Correct Words:</strong> <span id="resCorrectWords"></span></p>
+
+    <!-- Submit Button -->
+    <button id="finalSubmitBtn"
+        onclick="submitToSheet()"
+        style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; margin-top: 15px; cursor: pointer; border-radius: 5px; font-size: 16px; display:none;">
+        📤 Submit Result
+    </button>
+</div>
 
 <script>
   const paragraphs = [
