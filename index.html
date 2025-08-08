@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🖋Air Flow Pvt. Ltd. Typing Test</title>
+  <title>Air Flow Pvt. Ltd. Typing Test</title>
   <link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
@@ -136,7 +135,7 @@
 
 <div class="header">
   <img src="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" alt="Logo" />
-  <h2>🖋Air Flow Pvt. Ltd. Typing Speed Test</h2>
+  <h2>Air Flow Pvt. Ltd. Typing Speed Test</h2>
 </div>
 
 <!-- Login Page -->
@@ -154,27 +153,14 @@
 
 <!-- Typing Test Area -->
 <div class="container" id="test-area">
-  <div class="timer" id="timer">02:00</div>
+  <div class="timer" id="timer">01:00</div>
   <div id="paragraph"></div>
   <textarea id="typing-box" disabled placeholder="Start typing here..."></textarea>
 </div>
 
-<div id="results" style="display:none;">
-    <h3>Test Result</h3>
-    <p><strong>Name:</strong> <span id="resName"></span></p>
-    <p><strong>Email:</strong> <span id="resEmail"></span></p>
-    <p><strong>WPM:</strong> <span id="resWpm"></span></p>
-    <p><strong>Accuracy:</strong> <span id="resAccuracy"></span>%</p>
-    <p><strong>Total Words Typed:</strong> <span id="resTotalWords"></span></p>
-    <p><strong>Correct Words:</strong> <span id="resCorrectWords"></span></p>
-
-    <!-- Submit Button -->
-    <button id="finalSubmitBtn"
-        onclick="submitToSheet()"
-        style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; margin-top: 15px; cursor: pointer; border-radius: 5px; font-size: 16px; display:none;">
-        📤 Submit Result
-    </button>
-</div>
+<!-- Results -->
+<div class="container" id="results"></div>
+<div class="container"><button id="finalSubmitBtn" onclick="submitToSheet()">Submit</button></div>
 
 <script>
   const paragraphs = [
@@ -242,7 +228,7 @@
   function updateTimerDisplay() {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    document.getElementById("timer").innerText = ${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')};
+    document.getElementById("timer").innerText = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`;
   }
 
   function startMainTimer() {
@@ -271,14 +257,14 @@
         const correctChar = selectedText[i];
         const typedChar = typedText[i];
         if (typedChar === correctChar) {
-          html += <span class="correct">${correctChar}</span>;
+          html += `<span class="correct">${correctChar}</span>`;
         } else {
-          html += <span class="incorrect">${correctChar}</span>;
+          html += `<span class="incorrect">${correctChar}</span>`;
         }
       } else if (i === typedText.length) {
-        html += <span class="highlight">${selectedText[i]}</span>;
+        html += `<span class="highlight">${selectedText[i]}</span>`;
       } else {
-        html += <span>${selectedText[i]}</span>;
+        html += `<span>${selectedText[i]}</span>`;
       }
     }
     document.getElementById("paragraph").innerHTML = html;
@@ -309,7 +295,7 @@ function finishTest() {
   document.getElementById("typing-box").disabled = true;
   document.getElementById("test-area").style.display = "none";
 
-  document.getElementById("results").innerHTML = 
+  document.getElementById("results").innerHTML = `
     <h3>Test Result</h3>
     <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
     <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
@@ -317,7 +303,7 @@ function finishTest() {
     <p><strong>Accuracy:</strong> ${accuracy}%</p>
     <p><strong>Total Words Typed:</strong> ${totalWords}</p>
     <p><strong>Correct Words:</strong> ${correctWords}</p>
-  ;
+  `;
   document.getElementById("results").style.display = "block";
   document.getElementById("finalSubmitBtn").style.display = "block";
 
@@ -341,7 +327,7 @@ function finishTest() {
       "entry.1193619231": window.resultData.correctWords
     });
 
-    fetch(${formBaseURL}?${params.toString()}, {
+    fetch(`${formBaseURL}?${params.toString()}`, {
       method: "POST",
       mode: "no-cors",
       headers: {
