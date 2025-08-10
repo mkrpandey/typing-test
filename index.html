@@ -6,29 +6,39 @@
   <title>🖊Air Flow Pvt. Ltd. Typing Test</title>
   <!-- Mobile Restriction -->
   <script>
-  // Simple mobile device detection
+  // Mobile detection function (user agent based)
   function isMobileDevice() {
     return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
   }
+
   if (isMobileDevice()) {
-    // Mobile detected, page ke sab content hide karo
-    document.documentElement.innerHTML = `
-      <div style="
-        height: 100vh; 
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        font-family: 'Poppins', sans-serif;
-        text-align: center; 
-        padding: 20px;
-        background: #e6f4ff;
-        color: #003366;
-        font-size: 22px;
-        ">
-        📵 Sorry,  You cannot use this on mobile.<br/>
-        Please open on a desktop/laptop.
-      </div>
+    // Body ko hide karo
+    document.body.style.display = 'none';
+
+    // Ek full screen overlay div banao
+    const overlay = document.createElement('div');
+    overlay.style.position = 'fixed';
+    overlay.style.top = 0;
+    overlay.style.left = 0;
+    overlay.style.width = '100vw';
+    overlay.style.height = '100vh';
+    overlay.style.backgroundColor = '#e6f4ff';
+    overlay.style.color = '#003366';
+    overlay.style.display = 'flex';
+    overlay.style.justifyContent = 'center';
+    overlay.style.alignItems = 'center';
+    overlay.style.fontFamily = "'Poppins', sans-serif";
+    overlay.style.textAlign = 'center';
+    overlay.style.padding = '20px';
+    overlay.style.fontSize = '22px';
+    overlay.style.zIndex = 99999;
+
+    overlay.innerHTML = `
+      📵 Sorry, You cannot use this on mobile.<br/>
+      Please open on a desktop/laptop.
     `;
+
+    document.documentElement.appendChild(overlay);
   }
 </script>
   <link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
