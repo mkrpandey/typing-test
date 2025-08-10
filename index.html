@@ -295,7 +295,7 @@ function finishTest() {
   document.getElementById("typing-box").disabled = true;
   document.getElementById("test-area").style.display = "none";
 
-  document.getElementById("results").innerHTML = `
+document.getElementById("results").innerHTML = `
   <h3>Test Result</h3>
   <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
   <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
@@ -304,7 +304,10 @@ function finishTest() {
   <p><strong>Total Words Typed:</strong> ${totalWords}</p>
   <p><strong>Correct Words:</strong> ${correctWords}</p>
   <div style="margin-top:20px;">
-    <button onclick="submitToSheet()" 
+    <button 
+      id="finalSubmitBtn"
+      type="button"
+      onclick="submitToSheet()" 
       style="
         background-color: #28a745;
         color: white;
@@ -332,33 +335,38 @@ function finishTest() {
     correctWords
   };
 }
-  function submitToSheet() {
-    const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdrV_MCvdC0-v-EY9QLUAcUh15cAX-0Cbc8pbmyqEcSswuwFQ/formResponse"; // replace with your form's real POST URL
-    const params = new URLSearchParams({
-      "entry.1239245755": window.resultData.name,
-      "entry.1202560839": window.resultData.email,
-      "entry.1945685852": window.resultData.wpm,
-      "entry.710656876": window.resultData.accuracy,
-      "entry.1233596875": window.resultData.totalWords,
-      "entry.1193619231": window.resultData.correctWords
-    });
+ function submitToSheet() {
+  const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdrV_MCvdC0-v-EY9QLUAcUh15cAX-0Cbc8pbmyqEcSswuwFQ/formResponse";
 
-    fetch(`${formBaseURL}?${params.toString()}`, {
-      method: "POST",
-      mode: "no-cors",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded"
-      }
-    })
-    .then(() => {
-      alert("✅ Submitted successfully!");
-      location.reload();
-    })
-    .catch((error) => {
-      alert("❌ Submission failed.");
-      console.error("Error:", error);
-    });
-  }
+  const params = new URLSearchParams({
+    "entry.1239245755": window.resultData.name,
+    "entry.1202560839": window.resultData.email,
+    "entry.1945685852": window.resultData.wpm,
+    "entry.710656876": window.resultData.accuracy,
+    "entry.1233596875": window.resultData.totalWords,
+    "entry.1193619231": window.resultData.correctWords
+  });
+
+  console.log("Button clicked, now submitting...");
+
+  fetch(`${formBaseURL}?${params.toString()}`, {
+    method: "POST",
+    mode: "no-cors",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded"
+    }
+  })
+  .then(() => {
+    alert("✅ Submitted successfully!");
+    document.getElementById('results').style.display = 'none';
+    document.getElementById('loginPage').style.display = 'flex';
+  })
+  .catch((error) => {
+    alert("❌ Submission failed.");
+    console.error("Error:", error);
+  });
+}
+
 </script>
 </body>
 </html>
