@@ -4,46 +4,30 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🖊Air Flow Pvt. Ltd. Typing Test</title>
-  <!-- Mobile Restriction -->
-  <script>
-  // Mobile detection function (user agent based)
-  function isMobileDevice() {
-    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
-  }
 
-  if (isMobileDevice()) {
-    // Body ko hide karo
-    document.body.style.display = 'none';
+<script>
+(function() {
+  // Mobile detect (desktop mode wale mobiles bhi detect karne ki koshish)
+  const isMobileUA = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
+  const smallScreen = window.innerWidth < 1024; // Desktop ka min width
 
-    // Ek full screen overlay div banao
-    const overlay = document.createElement('div');
-    overlay.style.position = 'fixed';
-    overlay.style.top = 0;
-    overlay.style.left = 0;
-    overlay.style.width = '100vw';
-    overlay.style.height = '100vh';
-    overlay.style.backgroundColor = '#e6f4ff';
-    overlay.style.color = '#003366';
-    overlay.style.display = 'flex';
-    overlay.style.justifyContent = 'center';
-    overlay.style.alignItems = 'center';
-    overlay.style.fontFamily = "'Poppins', sans-serif";
-    overlay.style.textAlign = 'center';
-    overlay.style.padding = '20px';
-    overlay.style.fontSize = '22px';
-    overlay.style.zIndex = 99999;
-
-    overlay.innerHTML = `
-      📵 Sorry, You cannot use this on mobile.<br/>
-      Please open on a desktop/laptop.
+  if (isMobileUA || smallScreen) {
+    document.body.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;font-family:sans-serif;background:#e6f4ff;padding:20px;">
+        <div>
+          <h2>📵 This Typing Test is Only Available on Desktop/Laptop</h2>
+          <p style="margin-top:10px;color:#555;">Please open this link on a desktop or laptop device.</p>
+        </div>
+      </div>
     `;
-
-    document.documentElement.appendChild(overlay);
+    document.body.style.overflow = "hidden";
   }
+})();
 </script>
-  <link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
-  <style>
+
+<link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+<style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
