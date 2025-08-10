@@ -7,11 +7,11 @@
 
 <script>
 (function() {
-  // Mobile detect (desktop mode wale mobiles bhi detect karne ki koshish)
   const isMobileUA = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
-  const smallScreen = window.innerWidth < 1024; // Desktop ka min width
+  const smallScreen = window.innerWidth < 1024; // laptop ka minimum width
+  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
 
-  if (isMobileUA || smallScreen) {
+  if (isMobileUA || smallScreen || isTouchDevice) {
     document.body.innerHTML = `
       <div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;font-family:sans-serif;background:#e6f4ff;padding:20px;">
         <div>
