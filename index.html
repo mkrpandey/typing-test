@@ -4,7 +4,51 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🖊Air Flow Pvt. Ltd. Typing Test</title>  
-  <link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
+<style>
+  body.blur {
+  filter: blur(6px);
+  pointer-events: none; /* content pe click na ho */
+  user-select: none;    /* text select na ho */
+  overflow: hidden;     /* scroll na ho */
+}
+
+.blocked {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100vw; height: 100vh;
+  background: #ffdddd;
+  color: red;
+  font-size: 24px;
+  font-weight: bold;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+body.mobile .blocked {
+  display: flex;
+}
+</style>
+<script>
+function checkMobile() {
+  let isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+                || window.innerWidth < 1024;
+
+  if(isMobile) {
+    document.body.classList.add('mobile');
+    document.body.classList.add('blur');
+  } else {
+    document.body.classList.remove('mobile');
+    document.body.classList.remove('blur');
+  }
+}
+
+window.onload = checkMobile;
+window.onresize = checkMobile;
+</script>
+
+<link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
 <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -132,6 +176,10 @@
   </style>
 </head>
 <body>
+  <div class="blocked">
+    ⚠️ Mobile devices not supported. Please use a desktop to access this site.
+  </div>
+  <!-- baki content yahan rahega -->
 
 <div class="header">
   <img src="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" alt="Logo" />
@@ -361,7 +409,7 @@ function submitToSheet() {
   popup.style.top = "50%";
   popup.style.left = "50%";
   popup.style.transform = "translate(-50%, -50%)";
-  popup.style.background = "linear-gradient(to right, #2dd4bf, #3b82f6";
+  popup.style.background = "linear-gradient(to right, #2dd4bf, #3b82f6)";
   popup.style.color = "white";
   popup.style.padding = "20px 30px";
   popup.style.fontSize = "20px";
@@ -377,14 +425,14 @@ function submitToSheet() {
   // 2 sec me fade out
   setTimeout(() => {
     popup.style.opacity = "0";
-  }, 1000);
+  }, 2000);
 
   // 3 sec baad remove popup aur login page dikhao
   setTimeout(() => {
     popup.remove();
     document.getElementById('results').style.display = 'none';
     document.getElementById('loginPage').style.display = 'flex';
-  }, 2000);
+  }, 3000);
 
   // 5 sec baad refresh
   setTimeout(() => {
