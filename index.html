@@ -5,53 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🖊Air Flow Pvt. Ltd. Typing Test</title>
 
-<script>
-(function() {
-  // OPTIONAL: only run this block for a specific page (set to null to always run)
-  const onlyForUrl = null; // e.g. "https://yourdomain.com/typing-test.html"
 
-  if (onlyForUrl && window.location.href !== onlyForUrl) return;
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+    .blocked-message {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      text-align: center;
+      font-size: 1.5rem;
+      background-color: #f8d7da;
+      color: #721c24;
+      padding: 20px;
+    }
+  </style>
 
-  function isPhone() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
+  <script>
+    function isMobileDevice() {
+      // Stronger detection: also detects desktop mode on mobile browsers
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+        || (window.innerWidth <= 1024 && 'ontouchstart' in window);
+    }
 
-    // iPhone or iPod
-    const isiPhone = /\b(iPhone|iPod)\b/i.test(ua);
+    function blockMobileAccess() {
+      if (isMobileDevice()) {
+        document.documentElement.innerHTML = `
+          <body>
+            <div class="blocked-message">
+              📵 This page is only available on Desktop / Laptop
+            </div>
+          </body>
+        `;
+        // Stop all further JS execution
+        throw new Error("Blocked on mobile");
+      }
+    }
 
-    // Android phones include "Mobile" in UA; Android tablets usually do NOT include "Mobile"
-    const isAndroidPhone = /Android/i.test(ua) && /Mobile/i.test(ua);
+    // Block pinch zoom & double-tap zoom on mobile
+    document.addEventListener('gesturestart', e => e.preventDefault());
+    document.addEventListener('gesturechange', e => e.preventDefault());
+    document.addEventListener('gestureend', e => e.preventDefault());
+    document.addEventListener('touchmove', e => {
+      if (e.scale !== 1) e.preventDefault();
+    }, { passive: false });
 
-    // Windows Phone / older phones
-    const isWinPhone = /Windows Phone|IEMobile/i.test(ua);
-
-    return isiPhone || isAndroidPhone || isWinPhone;
-  }
-
-  if (isPhone()) {
-    // Option A: replace page content with a message
-    document.documentElement.innerHTML = `
-      <head>
-        <meta name="viewport" content="width=device-width,initial-scale=1.0">
-        <title>Mobile Not Supported</title>
-        <style>
-          body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:#f3f6fb;color:#222;display:flex;align-items:center;justify-content:center;height:100vh}
-          .box{max-width:520px;padding:28px;background:#fff;border-radius:12px;box-shadow:0 6px 30px rgba(10,20,40,0.08);text-align:center}
-          h1{margin:0 0 10px;font-size:20px}
-          p{margin:0;color:#555}
-        </style>
-      </head>
-      <body>
-        <div class="box">
-          <h1>📵 This page is only available on Desktop / Laptop</h1>
-          <p>Please open this link on a desktop or laptop device.</p>
-        </div>
-      </body>
-    `;
-    // Stop further scripts from running
-    throw new Error('Blocked on mobile phone');
-  }
-})();
-</script>
+    blockMobileAccess();
+  </script>
+</head>
+<body>
+  <h1>✅ Welcome to the Desktop Only Page</h1>
+  <p>This content is visible only on desktop or laptop devices.</p>
+</body>
+</html>
 
 <link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
