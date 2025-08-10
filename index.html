@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🖊Air Flow Pvt. Ltd. Typing Test</title>
+  <!-- Mobile Restriction -->
+  <script>
+    if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+      document.write("<h2 style='text-align:center; margin-top:50px; font-family:sans-serif;'>⚠️ You cannot use this on mobile.<br>Please open on a desktop/laptop.</h2>");
+      alert("⚠️ You cannot use this on mobile. Please open on a desktop/laptop.");
+      throw new Error("Mobile not supported");
+    }
+  </script>
   <link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
