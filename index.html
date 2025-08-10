@@ -4,53 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>🖊Air Flow Pvt. Ltd. Typing Test</title>  
-<style>
-  body.blur {
-  filter: blur(6px);
-  pointer-events: none; /* content pe click na ho */
-  user-select: none;    /* text select na ho */
-  overflow: hidden;     /* scroll na ho */
-}
-
-.blocked {
-  display: none;
-  position: fixed;
-  top: 0; left: 0;
-  width: 100vw; height: 100vh;
-  background: #ffdddd;
-  color: red;
-  font-size: 24px;
-  font-weight: bold;
-  align-items: center;
-  justify-content: center;
-  z-index: 9999;
-}
-
-body.mobile .blocked {
-  display: flex;
-}
-</style>
-<script>
-function checkMobile() {
-  let isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
-                || window.innerWidth < 1024;
-
-  if(isMobile) {
-    document.body.classList.add('mobile');
-    document.body.classList.add('blur');
-  } else {
-    document.body.classList.remove('mobile');
-    document.body.classList.remove('blur');
-  }
-}
-
-window.onload = checkMobile;
-window.onresize = checkMobile;
-</script>
-
-<link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
-<style>
+  <link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
+  <style>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
       font-family: 'Poppins', sans-serif;
@@ -176,11 +132,6 @@ window.onresize = checkMobile;
   </style>
 </head>
 <body>
-  <div class="blocked">
-    ⚠️ Mobile devices not supported. Please use a desktop to access this site.
-  </div>
-  <!-- baki content yahan rahega -->
-
 <div class="header">
   <img src="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" alt="Logo" />
   <h2>🖋Air Flow Pvt. Ltd. Typing Speed Test</h2>
