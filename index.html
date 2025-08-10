@@ -308,16 +308,14 @@ document.getElementById("results").innerHTML = `
       id="finalSubmitBtn"
       type="button"
       onclick="submitToSheet()" 
-      style="
-        background-color: #28a745;
-        color: white;
-        padding: 12px 20px;
-        font-size: 18px;
-        font-weight: bold;
-        border: none;
-        border-radius: 8px;
-        cursor: pointer;
-      ">
+      style="background: linear-gradient(to right, #2dd4bf, #3b82f6);
+           color: white;
+           padding: 15px 40px;
+           font-size: 18px;
+           font-weight: bold;
+           border: none;
+           border-radius: 50px;
+           cursor: pointer;">
       Please! Submit Your Result
     </button>
   </div>
@@ -363,7 +361,7 @@ function submitToSheet() {
   popup.style.top = "50%";
   popup.style.left = "50%";
   popup.style.transform = "translate(-50%, -50%)";
-  popup.style.background = "#28a745";
+  popup.style.background = "linear-gradient(to right, #2dd4bf, #3b82f6";
   popup.style.color = "white";
   popup.style.padding = "20px 30px";
   popup.style.fontSize = "20px";
@@ -379,19 +377,19 @@ function submitToSheet() {
   // 2 sec me fade out
   setTimeout(() => {
     popup.style.opacity = "0";
-  }, 2000);
+  }, 1000);
 
   // 3 sec baad remove popup aur login page dikhao
   setTimeout(() => {
     popup.remove();
     document.getElementById('results').style.display = 'none';
     document.getElementById('loginPage').style.display = 'flex';
-  }, 3000);
+  }, 2000);
 
   // 5 sec baad refresh
   setTimeout(() => {
     location.reload();
-  }, 5000);
+  }, 1000);
 }
 
 </script>
