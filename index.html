@@ -358,8 +358,15 @@ document.getElementById("results").innerHTML = `
   })
   .then(() => {
     alert("✅ Submitted successfully!");
+
+    // Pehle login page show karo
     document.getElementById('results').style.display = 'none';
     document.getElementById('loginPage').style.display = 'flex';
+
+    // 5 second baad page reload karo
+    setTimeout(() => {
+      location.reload();
+    }, 2000);
   })
   .catch((error) => {
     alert("❌ Submission failed.");
