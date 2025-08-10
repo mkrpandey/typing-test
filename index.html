@@ -335,7 +335,7 @@ document.getElementById("results").innerHTML = `
     correctWords
   };
 }
- function submitToSheet() {
+function submitToSheet() {
   const formBaseURL = "https://docs.google.com/forms/d/e/1FAIpQLSdrV_MCvdC0-v-EY9QLUAcUh15cAX-0Cbc8pbmyqEcSswuwFQ/formResponse";
 
   const params = new URLSearchParams({
@@ -347,31 +347,51 @@ document.getElementById("results").innerHTML = `
     "entry.1193619231": window.resultData.correctWords
   });
 
-  console.log("Button clicked, now submitting...");
-
+  // Data submit (background me)
   fetch(`${formBaseURL}?${params.toString()}`, {
     method: "POST",
     mode: "no-cors",
     headers: {
       "Content-Type": "application/x-www-form-urlencoded"
     }
-  })
-  .then(() => {
-    alert("✅ Submitted successfully!");
+  });
 
-    // Pehle login page show karo
+  // Success popup create
+  const popup = document.createElement("div");
+  popup.innerText = "✅ Successfully Submitted!";
+  popup.style.position = "fixed";
+  popup.style.top = "50%";
+  popup.style.left = "50%";
+  popup.style.transform = "translate(-50%, -50%)";
+  popup.style.background = "#28a745";
+  popup.style.color = "white";
+  popup.style.padding = "20px 30px";
+  popup.style.fontSize = "20px";
+  popup.style.fontWeight = "bold";
+  popup.style.borderRadius = "10px";
+  popup.style.boxShadow = "0 0 10px rgba(0,0,0,0.3)";
+  popup.style.zIndex = "9999";
+  popup.style.opacity = "1";
+  popup.style.transition = "opacity 1s ease";
+
+  document.body.appendChild(popup);
+
+  // 2 sec me fade out
+  setTimeout(() => {
+    popup.style.opacity = "0";
+  }, 2000);
+
+  // 3 sec baad remove popup aur login page dikhao
+  setTimeout(() => {
+    popup.remove();
     document.getElementById('results').style.display = 'none';
     document.getElementById('loginPage').style.display = 'flex';
+  }, 3000);
 
-    // 5 second baad page reload karo
-    setTimeout(() => {
-      location.reload();
-    }, 2000);
-  })
-  .catch((error) => {
-    alert("❌ Submission failed.");
-    console.error("Error:", error);
-  });
+  // 5 sec baad refresh
+  setTimeout(() => {
+    location.reload();
+  }, 5000);
 }
 
 </script>
