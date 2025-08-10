@@ -6,12 +6,31 @@
   <title>🖊Air Flow Pvt. Ltd. Typing Test</title>
   <!-- Mobile Restriction -->
   <script>
-    if (/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-      document.write("<h2 style='text-align:center; margin-top:50px; font-family:sans-serif;'>⚠️ You cannot use this on mobile.<br>Please open on a desktop/laptop.</h2>");
-      alert("⚠️ You cannot use this on mobile. Please open on a desktop/laptop.");
-      throw new Error("Mobile not supported");
-    }
-  </script>
+  // Simple mobile device detection
+  function isMobileDevice() {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+  }
+  if (isMobileDevice()) {
+    // Mobile detected, page ke sab content hide karo
+    document.documentElement.innerHTML = `
+      <div style="
+        height: 100vh; 
+        display: flex; 
+        justify-content: center; 
+        align-items: center; 
+        font-family: 'Poppins', sans-serif;
+        text-align: center; 
+        padding: 20px;
+        background: #e6f4ff;
+        color: #003366;
+        font-size: 22px;
+        ">
+        📵 Sorry,  You cannot use this on mobile.<br/>
+        Please open on a desktop/laptop.
+      </div>
+    `;
+  }
+</script>
   <link rel="icon" type="image/png" href="https://airflow.in/wp-content/uploads/2021/12/cropped-AIR-1.png" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet"/>
   <style>
