@@ -303,10 +303,23 @@ function finishTest() {
   <p><strong>Accuracy:</strong> ${accuracy}%</p>
   <p><strong>Total Words Typed:</strong> ${totalWords}</p>
   <p><strong>Correct Words:</strong> ${correctWords}</p>
-  <div style="margin-top:15px;">
-    <button id="finalSubmitBtn" onclick="submitToSheet()">Submit</button>
+  <div style="margin-top:20px;">
+    <button onclick="submitToSheet()" 
+      style="
+        background-color: #28a745;
+        color: white;
+        padding: 12px 20px;
+        font-size: 18px;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+      ">
+      Please! Submit Your Result
+    </button>
   </div>
 `;
+
   document.getElementById("results").style.display = "block";
   document.getElementById("finalSubmitBtn").style.display = "block";
 
