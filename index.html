@@ -7,20 +7,48 @@
 
 <script>
 (function() {
-  const isMobileUA = /Android|iPhone|iPad|iPod|BlackBerry|Windows Phone/i.test(navigator.userAgent);
-  const smallScreen = window.innerWidth < 1024; // laptop ka minimum width
-  const isTouchDevice = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+  // OPTIONAL: only run this block for a specific page (set to null to always run)
+  const onlyForUrl = null; // e.g. "https://yourdomain.com/typing-test.html"
 
-  if (isMobileUA || smallScreen || isTouchDevice) {
-    document.body.innerHTML = `
-      <div style="display:flex;align-items:center;justify-content:center;height:100vh;text-align:center;font-family:sans-serif;background:#e6f4ff;padding:20px;">
-        <div>
-          <h2>📵 This Typing Test is Only Available on Desktop/Laptop</h2>
-          <p style="margin-top:10px;color:#555;">Please open this link on a desktop or laptop device.</p>
+  if (onlyForUrl && window.location.href !== onlyForUrl) return;
+
+  function isPhone() {
+    const ua = navigator.userAgent || navigator.vendor || window.opera;
+
+    // iPhone or iPod
+    const isiPhone = /\b(iPhone|iPod)\b/i.test(ua);
+
+    // Android phones include "Mobile" in UA; Android tablets usually do NOT include "Mobile"
+    const isAndroidPhone = /Android/i.test(ua) && /Mobile/i.test(ua);
+
+    // Windows Phone / older phones
+    const isWinPhone = /Windows Phone|IEMobile/i.test(ua);
+
+    return isiPhone || isAndroidPhone || isWinPhone;
+  }
+
+  if (isPhone()) {
+    // Option A: replace page content with a message
+    document.documentElement.innerHTML = `
+      <head>
+        <meta name="viewport" content="width=device-width,initial-scale=1.0">
+        <title>Mobile Not Supported</title>
+        <style>
+          body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial;margin:0;background:#f3f6fb;color:#222;display:flex;align-items:center;justify-content:center;height:100vh}
+          .box{max-width:520px;padding:28px;background:#fff;border-radius:12px;box-shadow:0 6px 30px rgba(10,20,40,0.08);text-align:center}
+          h1{margin:0 0 10px;font-size:20px}
+          p{margin:0;color:#555}
+        </style>
+      </head>
+      <body>
+        <div class="box">
+          <h1>📵 This page is only available on Desktop / Laptop</h1>
+          <p>Please open this link on a desktop or laptop device.</p>
         </div>
-      </div>
+      </body>
     `;
-    document.body.style.overflow = "hidden";
+    // Stop further scripts from running
+    throw new Error('Blocked on mobile phone');
   }
 })();
 </script>
