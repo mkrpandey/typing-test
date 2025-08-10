@@ -160,7 +160,7 @@
 
 <!-- Results -->
 <div class="container" id="results"></div>
-<div class="container"><button id="finalSubmitBtn" onclick="submitToSheet()">Submit</button></div>
+<!-- <div class="container"><button id="finalSubmitBtn" onclick="submitToSheet()">Submit</button></div> -->
 
 <script>
   const paragraphs = [
@@ -296,14 +296,17 @@ function finishTest() {
   document.getElementById("test-area").style.display = "none";
 
   document.getElementById("results").innerHTML = `
-    <h3>Test Result</h3>
-    <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
-    <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
-    <p><strong>WPM:</strong> ${wpm}</p>
-    <p><strong>Accuracy:</strong> ${accuracy}%</p>
-    <p><strong>Total Words Typed:</strong> ${totalWords}</p>
-    <p><strong>Correct Words:</strong> ${correctWords}</p>
-  `;
+  <h3>Test Result</h3>
+  <p><strong>Name:</strong> ${document.getElementById("name").value}</p>
+  <p><strong>Email:</strong> ${document.getElementById("email").value}</p>
+  <p><strong>WPM:</strong> ${wpm}</p>
+  <p><strong>Accuracy:</strong> ${accuracy}%</p>
+  <p><strong>Total Words Typed:</strong> ${totalWords}</p>
+  <p><strong>Correct Words:</strong> ${correctWords}</p>
+  <div style="margin-top:15px;">
+    <button id="finalSubmitBtn" onclick="submitToSheet()">Submit</button>
+  </div>
+`;
   document.getElementById("results").style.display = "block";
   document.getElementById("finalSubmitBtn").style.display = "block";
 
